@@ -2,20 +2,19 @@
 # All rights reserved
 
 from fastapi import FastAPI
-from app.routers import badge, summoner
+from fastapi.staticfiles import StaticFiles
+from app.routers import badge
+import os
 
 app = FastAPI()
 
-# Include routers
+# Include router(s)
 app.include_router(badge.router, prefix="/badge", tags=["Badge"])
-app.include_router(summoner.router, prefix="/summoner", tags=["Summoner"])
 
+# Mount the assets folder
+assets_path = os.path.join(os.path.dirname(__file__), "assets")
+app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+    return {"message": "Thanks for using my API! :)"}

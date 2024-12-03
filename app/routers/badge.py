@@ -2,21 +2,23 @@
 # All rights reserved
 
 from fastapi import APIRouter, Query, HTTPException
+from fastapi.responses import PlainTextResponse
 from app.services.riot_api import get_summoner_rank
 from app.services.badge_generator import generate_badge
 
 router = APIRouter()
 
 
-@router.get("/", response_class="PlainTextResponse")
-async def get_badge(summoner: str = Query(..., description="Summoner's name"),
-                    region: str = Query(..., description="Region code, e.g., 'NA', 'EUW'")):
+@router.get("/{region}/{summoner}/{tagline}", response_class=PlainTextResponse)
+async def get_badge(region: str = Query(description="Region code, e.g., 'NA', 'EUW'"),
+                    summoner: str = Query(description="Summoner's name"),
+                    tagline: str = Query(description="Summoner tag, e.g., '#NA1', '#123'")):
     """
     Generates a badge for a summoner's rank.
     """
     try:
         # Fetch rank data from Riot API
-        rank_data = await get_summoner_rank(summoner, region)
+        rank_data = await get_summoner_rank(summoner, tagline, region)
 
         if not rank_data:
             raise HTTPException(status_code=404, detail="Summoner rank not found")
