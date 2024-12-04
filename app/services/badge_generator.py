@@ -7,6 +7,23 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+def calculate_width(summoner_name: str, tag_line: str) -> int:
+    """
+    Dynamically calculates the rectangle width based on the summoner name and tagline length.
+    Ensures the text fits comfortably within the rectangle.
+    :param summoner_name: The name of the summoner.
+    :param tag_line: The tag line of the summoner.
+    :return: The width of the rectangle.
+    """
+    base_width = 150  # Minimum width for short names
+    char_width = 7    # Average width of a character in pixels
+    padding = 20      # Extra padding for aesthetic spacing
+
+    total_length = len(f"{summoner_name}#{tag_line}")
+    calculated_width = base_width + total_length * char_width + padding
+
+    return max(calculated_width, base_width)
+
 def generate_badge(rank_data: dict) -> str:
     """
     Generates an SVG badge based on the rank data.
@@ -37,15 +54,15 @@ def generate_badge(rank_data: dict) -> str:
 
     # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
-    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="25">
+    <svg xmlns="http://www.w3.org/2000/svg" width="{calculate_width(summoner_name, tag_line)}" height="40">
         <!-- Rectangle background -->
-        <rect width="150" height="25" fill="{color}" />
+        <rect width="{calculate_width(summoner_name, tag_line)}" height="40" fill="{color}" />
         
         <!-- Icon -->
-        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="2" width="25" height="25" />
+        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="5" width="30" height="30" />
         
-        <!-- Bold Text centered relative to the rectangle -->
-        <text x="45" y="14" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
+        <!-- Text -->
+        <text x="45" y="25" font-family="Verdana" font-size="14" font-weight="bold" fill="white" dominant-baseline="middle">
             {summoner_name}#{tag_line}
         </text>
     </svg>
