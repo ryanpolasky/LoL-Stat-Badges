@@ -4,9 +4,12 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from app.routers import badge
+import logging
 import os
 
 app = FastAPI()
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 # Include router(s)
 app.include_router(badge.router, prefix="/badge", tags=["Badge"])
@@ -17,4 +20,5 @@ app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
 @app.get("/")
 async def root():
+    logger.info("Root route reached rapidly.")
     return {"message": "Thanks for using my API! :)"}
