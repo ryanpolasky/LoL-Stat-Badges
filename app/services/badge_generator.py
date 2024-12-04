@@ -59,10 +59,10 @@ def generate_badge(rank_data: dict) -> str:
         <rect width="{calculate_width(summoner_name, tag_line)}" height="28" fill="{color}" />
         
         <!-- Icon -->
-        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="3" y="3" width="21" height="21" />
+        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="2" width="25" height="25" />
         
         <!-- Text -->
-        <text x="35" y="15" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
+        <text x="35" y="16" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
             {summoner_name}#{tag_line}
         </text>
     </svg>
