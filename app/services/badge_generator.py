@@ -35,6 +35,7 @@ def generate_badge(rank_data: dict) -> str:
     }
     color = colors.get(rank, "#ffffff")
 
+    # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
     <svg xmlns="http://www.w3.org/2000/svg" width="150" height="25">
         <!-- Rectangle background -->
@@ -44,7 +45,7 @@ def generate_badge(rank_data: dict) -> str:
         <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="2" width="25" height="25" />
         
         <!-- Bold Text centered relative to the rectangle -->
-        <text x="45" y="14" font-family="Verdana" font-size="11" font-weight="bold" fill="black" dominant-baseline="middle">
+        <text x="45" y="14" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
             {summoner_name}#{tag_line}
         </text>
     </svg>
