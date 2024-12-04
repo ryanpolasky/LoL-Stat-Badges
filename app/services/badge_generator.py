@@ -36,15 +36,15 @@ def generate_badge(rank_data: dict) -> str:
     color = colors.get(rank, "#ffffff")
 
     svg_template = f"""
-    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="30">
+    <svg xmlns="http://www.w3.org/2000/svg" width="150" height="25">
         <!-- Rectangle background -->
-        <rect width="150" height="30" fill="{color}" />
+        <rect width="150" height="25" fill="{color}" />
         
         <!-- Icon -->
-        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="2" width="30" height="30" />
+        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="2" width="25" height="25" />
         
         <!-- Bold Text centered relative to the rectangle -->
-        <text x="45" y="17" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
+        <text x="45" y="14" font-family="Verdana" font-size="11" font-weight="bold" fill="black" dominant-baseline="middle">
             {summoner_name}#{tag_line}
         </text>
     </svg>
