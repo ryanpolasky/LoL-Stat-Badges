@@ -114,7 +114,7 @@ async def get_summoner_rank(summoner_name: str, tag_line: str, region: str) -> A
                 "summoner_name": summoner_name,
                 "tag_line": tag_line,
             }
-            logger.info(f"Player {summoner_name}#{tag_line} is rank {data["tier"]}, division {data["rank"]}")
+            logger.info(f"Player {summoner_name}#{tag_line} is rank {data['tier']}, division {data['rank']}")
             return relevant_details
 
         else:  # If the request is not successful,
