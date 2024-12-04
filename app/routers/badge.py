@@ -3,6 +3,7 @@
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
+from fastapi.responses import Response
 import logging
 from app.services.riot_api import get_summoner_rank
 from app.services.badge_generator import generate_badge
@@ -31,7 +32,7 @@ async def get_badge(region: str, summoner: str, tagline: str):
         logger.info(f"Trying to generate badge for user {summoner}#{tagline} in region {region}...")
         badge_svg = generate_badge(rank_data)
         logger.info(badge_svg)
-        return badge_svg
+        return Response(badge_svg, media_type="image/svg+xml")
 
     except HTTPException as e:
         raise e
