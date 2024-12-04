@@ -52,17 +52,20 @@ def generate_badge(rank_data: dict) -> str:
     }
     color = colors.get(rank, "#ffffff")
 
+    # Calculate proper width for badge
+    proper_width = calculate_width(summoner_name, tag_line)
+
     # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
-    <svg xmlns="http://www.w3.org/2000/svg" width="{calculate_width(summoner_name, tag_line)}" height="28">
+    <svg xmlns="http://www.w3.org/2000/svg" width="{proper_width}" height="28">
         <!-- Rectangle background -->
-        <rect width="{calculate_width(summoner_name, tag_line)}" height="28" fill="{color}" />
+        <rect width="{proper_width}" height="28" fill="{color}" />
         
         <!-- Icon -->
-        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="2" width="25" height="25" />
+        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="0" width="28" height="28" />
         
         <!-- Text -->
-        <text x="35" y="15.25" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
+        <text x="38" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
             {summoner_name}#{tag_line}
         </text>
     </svg>
