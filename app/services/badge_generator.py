@@ -20,7 +20,7 @@ def calculate_width(summoner_name: str, tag_line: str) -> int:
     padding = 20      # Extra padding for aesthetic spacing
 
     total_length = len(f"{summoner_name}#{tag_line}")
-    calculated_width = base_width + total_length * char_width + padding
+    calculated_width = total_length * char_width + padding
 
     return max(calculated_width, base_width)
 
