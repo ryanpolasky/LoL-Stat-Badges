@@ -2,6 +2,7 @@
 # All rights reserved
 
 import logging
+import base64
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,10 @@ def calculate_width(summoner_name: str, tag_line: str) -> int:
 
     return max(calculated_width, base_width)
 
+def encode_image_to_base64(image_path: str):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
+
 def generate_badge(rank_data: dict) -> str:
     """
     Generates an SVG badge based on the rank data.
@@ -37,7 +42,7 @@ def generate_badge(rank_data: dict) -> str:
 
     logger.info(f"`generate_badge` started for player {summoner_name}#{tag_line}")
 
-    # Determine badge color based on rank, defaulting to white
+    # Determine badge color based on rank, defaulting to light grey for unranked
     colors = {
         "iron": "#3c2f2a",
         "bronze": "#ae6f5b",
@@ -50,10 +55,13 @@ def generate_badge(rank_data: dict) -> str:
         "grandmaster": "#e3653d",
         "challenger": "#b4fbfd",
     }
-    color = colors.get(rank, "#ffffff")
+    color = colors.get(rank, "#D3D3D3")
 
     # Calculate proper width for badge
     proper_width = calculate_width(summoner_name, tag_line)
+
+    # Base64 encode the image (encode into the SVG for sake of GitHub embeds)
+    base64_rank_img = f"assets/{rank}.png"
 
     # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
@@ -62,7 +70,7 @@ def generate_badge(rank_data: dict) -> str:
         <rect width="{proper_width}" height="28" fill="{color}" />
         
         <!-- Icon -->
-        <image href="{settings.API_BASE_URL}/assets/{rank}.png" x="5" y="0" width="28" height="28" />
+        <image href="data:image/png;base64,{base64_rank_img}" x="5" y="0" width="28" height="28" />
         
         <!-- Text -->
         <text x="38" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle">
