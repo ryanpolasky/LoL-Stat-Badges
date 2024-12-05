@@ -3,21 +3,11 @@
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
 from app.routers import badge
 import logging
 import os
 
 app = FastAPI()
-
-# Configure CORSMiddleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Replace "*" with specific domains for better security
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
