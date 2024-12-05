@@ -18,9 +18,10 @@ def calculate_width(summoner_name: str, tag_line: str) -> int:
     """
     char_width = 7    # Average width of a character in pixels
     padding = 20      # Extra padding for aesthetic spacing
+    icon_size = 35    # Extra space for the icon
 
     total_length = len(f"{summoner_name}#{tag_line}")
-    calculated_width = total_length * char_width + padding
+    calculated_width = total_length * char_width + padding + icon_size
 
     return calculated_width
 
