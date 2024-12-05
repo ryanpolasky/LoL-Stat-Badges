@@ -32,6 +32,10 @@ async def get_badge(region: str, summoner: str, tagline: str):
         logger.info(f"Trying to generate badge for user {summoner}#{tagline} in region {region}...")
         badge_svg = generate_badge(rank_data)
         logger.info(badge_svg)
+
+        # Generate the response & return it
+        response = Response(badge_svg, media_type="image/svg+xml")
+        response.headers["Cache-Control"] = "no-cache"
         return Response(badge_svg, media_type="image/svg+xml")
 
     except HTTPException as e:
