@@ -61,7 +61,7 @@ def generate_badge(rank_data: dict) -> str:
     proper_width = calculate_width(summoner_name, tag_line)
 
     # Base64 encode the image (encode into the SVG for sake of GitHub embeds)
-    base64_rank_img = f"assets/{rank}.png"
+    base64_rank_img = encode_image_to_base64(f"assets/{rank}.png")
 
     # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
