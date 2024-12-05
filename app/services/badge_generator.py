@@ -16,14 +16,13 @@ def calculate_width(summoner_name: str, tag_line: str) -> int:
     :param tag_line: The tag line of the summoner.
     :return: The width of the rectangle.
     """
-    base_width = 150  # Minimum width for short names
     char_width = 7    # Average width of a character in pixels
     padding = 20      # Extra padding for aesthetic spacing
 
     total_length = len(f"{summoner_name}#{tag_line}")
     calculated_width = total_length * char_width + padding
 
-    return max(calculated_width, base_width)
+    return calculated_width
 
 def encode_image_to_base64(image_path: str):
     with open(image_path, "rb") as image_file:
