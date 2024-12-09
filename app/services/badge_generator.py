@@ -15,7 +15,7 @@ def calculate_width(badge_text: str) -> int:
     :param badge_text: The text to be displayed on the badge.
     :return: The width of the rectangle.
     """
-    char_width = 7    # Average width of a character in pixels
+    char_width = 8    # Average width of a character in pixels
     padding = 25      # Extra padding for aesthetic spacing
     icon_size = 35    # Extra space for the icon
 
