@@ -8,14 +8,14 @@ from app.config import settings
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-def calculate_width(badge_text: str) -> int:
+def calculate_width(badge_text: str) -> float:
     """
     Dynamically calculates the rectangle width based on the summoner name and tagline length.
     Ensures the text fits comfortably within the rectangle.
     :param badge_text: The text to be displayed on the badge.
     :return: The width of the rectangle.
     """
-    char_width = 8    # Average width of a character in pixels
+    char_width = 7.5    # Average width of a character in pixels
     padding = 25      # Extra padding for aesthetic spacing
     icon_size = 35    # Extra space for the icon
 

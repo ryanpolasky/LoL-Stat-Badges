@@ -11,11 +11,9 @@ GitHub tech stack? No? Well too bad! Introducing **LoL Stat Badges**! Display yo
 README files or anywhere else that supports SVG embeds!
 
 ![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE)&nbsp;
-![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Shua/EGGGY)&nbsp;
-![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Solomon/NA0)&nbsp;
-
-[//]: # (In the works -> Realized space handling is non-existent!)
-[//]: # (![League of Legends]&#40;https://lol-stat-badges.onrender.com/badge/KR/Hide%20on%20bush/KR1&#41;&nbsp;)
+![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Shua/EGGGY?rank_name=true)&nbsp;
+![League of Legends](https://lol-stat-badges.onrender.com/badge/KR/Hide%20on%20bush/KR1)&nbsp;
+![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Solomon/NA0?rank_name=true)&nbsp;
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
