@@ -11,7 +11,10 @@ endpoints = constants.RIOT_ENDPOINTS
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-async def get_summoner_puuid(summoner_name: str, tag_line: str, region: str) -> str | None:
+
+async def get_summoner_puuid(
+    summoner_name: str, tag_line: str, region: str
+) -> str | None:
     """
     Function used to request the PUUID for a player using their Summoner Name, their tag, and their region.
     Example: Eggo#WFLE
@@ -24,7 +27,9 @@ async def get_summoner_puuid(summoner_name: str, tag_line: str, region: str) -> 
 
     curr_region = calculate_region(region, True)
 
-    url = f"{curr_region}/riot/account/v1/accounts/by-riot-id/{summoner_name}/{tag_line}"
+    url = (
+        f"{curr_region}/riot/account/v1/accounts/by-riot-id/{summoner_name}/{tag_line}"
+    )
     logger.info(url)
     headers = {"X-Riot-Token": settings.RIOT_API_KEY}
 
@@ -58,7 +63,10 @@ async def get_summoner_account_id(puuid: str, region: str) -> str | None:
             return response.json()["id"]
         return None
 
-async def get_summoner_rank(summoner_name: str, tag_line: str, region: str) -> Any | None:
+
+async def get_summoner_rank(
+    summoner_name: str, tag_line: str, region: str
+) -> Any | None:
     """
     Function used to request the rank data for a player using their Summoner Name, their tag, and their region.
     Example: Eggo#WFLE
@@ -114,12 +122,15 @@ async def get_summoner_rank(summoner_name: str, tag_line: str, region: str) -> A
                 "summoner_name": summoner_name,
                 "tag_line": tag_line,
             }
-            logger.info(f"Player {summoner_name}#{tag_line} is rank {data['tier']}, division {data['rank']}")
+            logger.info(
+                f"Player {summoner_name}#{tag_line} is rank {data['tier']}, division {data['rank']}"
+            )
             return relevant_details
 
         else:  # If the request is not successful,
             logger.info("Request for rank data unsuccessful")
             return None
+
 
 def calculate_region(region: str, by_area: bool) -> str:
     """

@@ -15,12 +15,15 @@ mock_summoner_data = {
     "tag_line": "WFLE",
     # I know this PUUID looks like a secret value that I messed up & put in plain code, but it's
     # actually plainly accessible to anyone w/ a Riot API key, so it's nothing to worry about obscuring
-    "puuid": "m6VD_tt5-vRTs3zqXyjNbqddf8WuLUZp4rEpYvwj6fTf63L-_oOE2vLLl-imdVhrcNX1HPwgquIKUw"
+    "puuid": "m6VD_tt5-vRTs3zqXyjNbqddf8WuLUZp4rEpYvwj6fTf63L-_oOE2vLLl-imdVhrcNX1HPwgquIKUw",
 }
+
 
 @pytest.fixture
 def mock_riot_api():
-    with patch("app.services.riot_api.get_summoner_puuid", return_value=mock_summoner_data):
+    with patch(
+        "app.services.riot_api.get_summoner_puuid", return_value=mock_summoner_data
+    ):
         yield
 
 

@@ -20,6 +20,7 @@ app.include_router(badge.router, prefix="/badge", tags=["Badge"])
 assets_path = os.path.join(os.path.dirname(__file__), "assets")
 app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 
+
 @app.get("/")
 async def root():
     logger.info("Root GET route accessed.")
@@ -36,7 +37,10 @@ async def root():
     """
     return HTMLResponse(content=html_content, status_code=200)
 
+
 @app.head("/")
 async def head_root():
     logger.info("Root HEAD route accessed.")
-    return RedirectResponse(url="https://github.com/ryanpolasky/LoL-Stat-Badges", status_code=303)
+    return RedirectResponse(
+        url="https://github.com/ryanpolasky/LoL-Stat-Badges", status_code=303
+    )
