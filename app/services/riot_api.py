@@ -135,19 +135,19 @@ def calculate_region(region: str, by_area: bool) -> str:
             response = endpoints["AMERICAS"][region]
     elif region in endpoints["ASIA"]:
         if by_area:
-            response = endpoints["AMERICAS"]["REGION"]
+            response = endpoints["ASIA"]["REGION"]
         else:
-            response = endpoints["AMERICAS"][region]
+            response = endpoints["ASIA"][region]
     elif region in endpoints["EUROPE"]:
         if by_area:
-            response = endpoints["AMERICAS"]["REGION"]
+            response = endpoints["EUROPE"]["REGION"]
         else:
-            response = endpoints["AMERICAS"][region]
+            response = endpoints["EUROPE"][region]
     elif region in endpoints["SEA"]:
         if by_area:
-            response = endpoints["AMERICAS"]["REGION"]
+            response = endpoints["SEA"]["REGION"]
         else:
-            response = endpoints["AMERICAS"][region]
+            response = endpoints["SEA"][region]
     else:
         logger.info("Region not found")
         raise InvalidRegionException
