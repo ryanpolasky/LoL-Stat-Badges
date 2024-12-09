@@ -1,0 +1,30 @@
+name: Deployed Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  ping-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Wait for 1 minute to ensure deployment finishes
+        run: |
+          echo "Waiting for 1 minute to ensure deployment finishes..."
+          sleep 60
+
+      - name: Send a ping request to the API endpoint
+        run: |
+          RESPONSE=$(curl --write-out "%{http_code}" --silent --output /dev/null https://lol-stat-badges.onrender.com)
+          if [ "$RESPONSE" -ne 200 ]; then
+            echo "API endpoint failed with status code $RESPONSE"
+            exit 1
+          else
+            echo "API endpoint is up and returned status code $RESPONSE"
+          fi
