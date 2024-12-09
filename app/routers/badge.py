@@ -59,7 +59,9 @@ async def get_badge(
             f"Trying to generate badge for user {safe_summoner}#{tagline} in region {region}..."
         )
         badge_svg = generate_badge(rank_data, rank_name)
-        logger.info(f"Badge successfully generated for {safe_summoner}#{tagline} in region {region}!")
+        logger.info(
+            f"Badge successfully generated for {safe_summoner}#{tagline} in region {region}!"
+        )
 
         # Generate the response & return it
         response = Response(badge_svg, media_type="image/svg+xml")
