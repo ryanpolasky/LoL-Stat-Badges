@@ -24,4 +24,4 @@ jobs:
           pip install pip-audit
 
       - name: Run Security Audit
-        run: pip-audit
+        run: pip-audit -v

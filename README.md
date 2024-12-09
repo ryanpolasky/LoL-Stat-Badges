@@ -26,6 +26,7 @@ README files or anywhere else that supports SVG embeds!
 
 ### *Tests*:
 ![Linting](https://github.com/ryanpolasky/LoL-Stat-Badges/actions/workflows/pylint.yml/badge.svg)
+![Security](https://github.com/ryanpolasky/LoL-Stat-Badges/actions/workflows/securityscan.yml/badge.svg)
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
