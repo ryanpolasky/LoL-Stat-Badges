@@ -24,6 +24,9 @@ README files or anywhere else that supports SVG embeds!
 ![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)&nbsp;
 ![Riot Games API](https://img.shields.io/badge/Riot_Games-D32936?style=for-the-badge&logo=riot-games&logoColor=white)&nbsp;
 
+### *Tests*:
+![Linting](https://github.com/ryanpolasky/LoL-Stat-Badges/actions/workflows/pylint.yml/badge.svg)
+
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
 ### *API Usage*: 
