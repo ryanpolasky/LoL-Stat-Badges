@@ -75,7 +75,7 @@ async def get_summoner_rank(
     :param region: The region of your account. Example: 'NA1'
     :return: Returns the rank data of the player.
     """
-    logger.info(f"`get_summoner_rank` called...")
+    logger.info("`get_summoner_rank` called...")
 
     # First, get the summoner PUUID
     summoner_puuid = await get_summoner_puuid(summoner_name, tag_line, region)
@@ -95,7 +95,7 @@ async def get_summoner_rank(
     # Return the tier & rank of the player
     async with httpx.AsyncClient() as client:
         # Make the request
-        logger.info(f"Requesting rank data...")
+        logger.info("Requesting rank data...")
         response = await client.get(url, headers=headers)
 
         if response.status_code == 200:  # If the request is successful,

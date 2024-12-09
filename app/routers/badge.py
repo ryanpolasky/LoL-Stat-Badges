@@ -3,7 +3,6 @@
 
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response, PlainTextResponse
-from typing import Optional
 import re
 import logging
 from app.services.riot_api import get_summoner_rank
@@ -74,5 +73,5 @@ async def get_badge(
     # If some other Pythonic exception is raised, package it into an HTTP exception
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail="An error occurred while generating the badge"
+            status_code=500, detail=f"An error occurred while generating the badge: {e}"
         )

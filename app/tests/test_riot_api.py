@@ -5,7 +5,6 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch
 from app.main import app  # Import your FastAPI app
-from app.services.riot_api import get_summoner_puuid  # Import the function to mock
 
 client = TestClient(app)
 
