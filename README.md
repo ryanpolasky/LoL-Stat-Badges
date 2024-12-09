@@ -51,6 +51,7 @@ end of your embed URL.
 - Add additional styles to match the Shields.io styles [listed here](https://shields.io/docs/static-badges)
 - Add caching
   - Might not be necessary as the main use case is GitHub, which already caches for at least a day
+- Finalize Python tests
 - Add support for specifying which ranked queue to use
 - Check if Teamfight Tactics (TFT) support can be added & implement it if it can be
 
