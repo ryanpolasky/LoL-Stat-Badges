@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
+# todo - replace this with dynamic text measuring --> PIL/pillow package?
 def calculate_width(badge_text: str) -> float:
     """
     Dynamically calculates the rectangle width based on the summoner name and tagline length.

@@ -44,19 +44,22 @@ To display your degeneracy, follow the steps below:
 - Embed your shame into your GitHub README - `![LoL Stat Badge](https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE)&nbsp;`
   - The `&nbsp;` tag is simply for formatting, so feel free to omit it at will
 
-If you would rather the badge show the name of the rank as opposed to your username & tag, include `?rank_name=true` at 
-end of your embed URL.
+If you want the badge to show the name of the rank instead of your Riot ID, include `?rank_name=true` at end of your 
+embed URL.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
 ### *Next Steps*:
+- Figure out a way to measure the length of a username for dynamic badge sizing
+  - Current method is decent, but certain names can lead to shorter/longer than necessary badges
 - Add additional styles to match the Shields.io styles [listed here](https://shields.io/docs/static-badges)
 - Add caching
   - Might not be necessary as the main use case is GitHub, which already caches for at least a day
 - Finalize Python tests
 - Add support for specifying which ranked queue to use
   - Currently only functions with Solo/Duo queue
-- Check if Teamfight Tactics (TFT) support can be added & implement it if it can be
+- ~~Check if Teamfight Tactics (TFT) support can be added & implement it if it can be~~
+  - Looks like TFT can be added! 
 - ~~Add support for non-Latin/CJK characters~~
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">

@@ -120,9 +120,7 @@ async def get_summoner_rank(
                     "summoner_name": summoner_name,
                     "tag_line": tag_line,
                 }
-                logger.info(
-                    f"Player {summoner_name}#{tag_line} is unranked"
-                )
+                logger.info(f"Player {summoner_name}#{tag_line} is unranked")
 
             else:
                 # Return the relevant details
