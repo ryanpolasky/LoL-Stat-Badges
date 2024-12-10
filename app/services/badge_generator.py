@@ -38,7 +38,7 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
     :return: Returns the SVG badge in plain text.
     """
     rank = rank_data["rank"].lower()
-    div = rank_data["div"].upper()
+    div = rank_data["div"].upper()  # Not used as of now
     summoner_name = rank_data["summoner_name"]
     tag_line = rank_data["tag_line"]
 
@@ -61,8 +61,10 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
         "master": "#ba48e1",
         "grandmaster": "#e3653d",
         "challenger": "#43AFEC",
+        "error": "#cc0000",
+        "unranked": "#808080"
     }
-    color = colors.get(rank, "#D3D3D3")
+    color = colors.get(rank, "#FFFFFF")
 
     # Calculate proper width for badge
     proper_width = calculate_width(badge_text)

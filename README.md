@@ -39,6 +39,7 @@ To display your degeneracy, follow the steps below:
 - Add your region ([options listed here](https://github.com/ryanpolasky/LoL-Stat-Badges/blob/main/app/config.py)) to the path - `https://lol-stat-badges.onrender.com/badge/NA1`
 - Add your Riot ID name to the path - `https://lol-stat-badges.onrender.com/badge/NA1/Eggo`
   - If your Riot ID name has spaces, replace them with `%20` in the URL
+  - Note: This API currently does not work with 
 - Add your Riot ID tag to the path - `https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE`
 - Embed your shame into your GitHub README - `![LoL Stat Badge](https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE)&nbsp;`
   - The `&nbsp;` tag is simply for formatting, so feel free to omit it at will
@@ -54,7 +55,9 @@ end of your embed URL.
   - Might not be necessary as the main use case is GitHub, which already caches for at least a day
 - Finalize Python tests
 - Add support for specifying which ranked queue to use
+  - Currently only functions with Solo/Duo queue
 - Check if Teamfight Tactics (TFT) support can be added & implement it if it can be
+- ~~Add support for non-Latin/CJK characters~~
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
