@@ -5,6 +5,8 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response, PlainTextResponse
 import regex as re
 import logging
+from discord_webhook import DiscordWebhook
+from app.config import Settings
 from app.services.riot_api import get_summoner_rank
 from app.services.badge_generator import generate_badge
 
@@ -25,6 +27,10 @@ async def get_badge(
 
     # Handle spaces in usernames
     safe_summoner = summoner.replace("%20", " ")
+
+    # Send a webhook to creator's Discord for sake of counting the API's users
+    webhook = DiscordWebhook(url=Settings.DISCORD_WEBHOOK, content=f"API called for {safe_summoner}#{tag_line} in region {region}")
+    _ = webhook.execute()
 
     # Check for summoner name being too long
     if len(safe_summoner) > 16:
@@ -97,6 +103,7 @@ async def get_badge(
             f"\nConfiguration {safe_summoner}#{tag_line} in region {region} invalid..."
         )
 
+        # Create mock data to call `generate_badge` with
         rank_data = {
             "rank": "error",
             "div": "n/a",
@@ -104,4 +111,10 @@ async def get_badge(
             "tag_line": tag_line,
         }
 
+        # Generate the error badge
         badge_svg = generate_badge(rank_data, True)
+
+        # Generate the response & return it
+        response = Response(badge_svg, media_type="image/svg+xml")
+        response.headers["Cache-Control"] = "no-cache"
+        return Response(badge_svg, media_type="image/svg+xml", status_code=200)

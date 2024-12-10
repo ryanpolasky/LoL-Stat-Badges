@@ -7,6 +7,7 @@ import os
 class Settings:
     RIOT_API_KEY: str = os.getenv("RIOT_API_KEY")
     API_BASE_URL: str = "https://lol-stat-badges.onrender.com"
+    DISCORD_WEBHOOK: str = os.getenv("DISCORD_WEBHOOK")
 
 
 class Constants:
