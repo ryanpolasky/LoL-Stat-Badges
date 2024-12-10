@@ -6,6 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
 from app.routers import badge
 import logging
+from discord_webhook import DiscordWebhook
+from app.config import Settings
 import os
 
 app = FastAPI()
@@ -19,6 +21,10 @@ app.include_router(badge.router, prefix="/badge", tags=["Badge"])
 # Mount the assets folder
 assets_path = os.path.join(os.path.dirname(__file__), "assets")
 app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
+
+# Send a webhook to creator's Discord for sake of counting the API's users
+webhook = DiscordWebhook(url=Settings.DISCORD_WEBHOOK, content=f"**Service Restarted**")
+_ = webhook.execute()
 
 
 @app.get("/")

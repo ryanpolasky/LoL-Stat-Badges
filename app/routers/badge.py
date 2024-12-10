@@ -29,7 +29,11 @@ async def get_badge(
     safe_summoner = summoner.replace("%20", " ")
 
     # Send a webhook to creator's Discord for sake of counting the API's users
-    webhook = DiscordWebhook(url=Settings.DISCORD_WEBHOOK, content=f"API called for {safe_summoner}#{tag_line} in region {region}")
+    Settings.API_CALLS += 1
+    webhook = DiscordWebhook(
+        url=Settings.DISCORD_WEBHOOK,
+        content=f"Call #{Settings.API_CALLS}: {safe_summoner}#{tag_line} in region {region}",
+    )
     _ = webhook.execute()
 
     # Check for summoner name being too long
@@ -58,31 +62,15 @@ async def get_badge(
             )
             rank_data = await get_summoner_rank(safe_summoner, tag_line, region)
 
-            if not rank_data:  # If no rank data is found (user already validated),
-                # Log it
-                logger.info("Rank data not found")
-
-                # Modify rank_data to handle unranked player
-                rank_data = {
-                    "rank": "unranked",
-                    "div": "n/a",
-                    "summoner_name": safe_summoner,
-                    "tag_line": tag_line,
-                }
-
-                # Generate unranked badge
-                badge_svg = generate_badge(rank_data, True)
-
-            else:  # If the rank data is generated successfully
-                logger.info(f"Rank data found:\n{rank_data}")
-                # Generate the badge as an SVG
-                logger.info(
-                    f"Trying to generate badge for user {safe_summoner}#{tag_line} in region {region}..."
-                )
-                badge_svg = generate_badge(rank_data, rank_name)
-                logger.info(
-                    f"Badge successfully generated for {safe_summoner}#{tag_line} in region {region}!"
-                )
+            logger.info(f"Rank data found:\n{rank_data}")
+            # Generate the badge as an SVG
+            logger.info(
+                f"Trying to generate badge for user {safe_summoner}#{tag_line} in region {region}..."
+            )
+            badge_svg = generate_badge(rank_data, rank_name)
+            logger.info(
+                f"Badge successfully generated for {safe_summoner}#{tag_line} in region {region}!"
+            )
 
             # Generate the response & return it
             response = Response(badge_svg, media_type="image/svg+xml")
@@ -96,7 +84,8 @@ async def get_badge(
         # If some other Pythonic exception is raised, package it into an HTTP exception
         except Exception as e:
             raise HTTPException(
-                status_code=500, detail=f"An error occurred while generating the badge: {e}"
+                status_code=500,
+                detail=f"An error occurred while generating the badge: {e}",
             )
     else:  # If the user's configuration is incorrect,
         logger.info(

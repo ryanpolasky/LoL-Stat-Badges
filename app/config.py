@@ -9,6 +9,9 @@ class Settings:
     API_BASE_URL: str = "https://lol-stat-badges.onrender.com"
     DISCORD_WEBHOOK: str = os.getenv("DISCORD_WEBHOOK")
 
+    # Call counter for debugging (Yes, I know this isn't persistent, don't worry)
+    API_CALLS = 0
+
 
 class Constants:
     RIOT_ENDPOINTS = {

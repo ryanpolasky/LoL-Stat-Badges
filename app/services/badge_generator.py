@@ -15,7 +15,7 @@ def calculate_width(badge_text: str) -> float:
     :param badge_text: The text to be displayed on the badge.
     :return: The width of the rectangle.
     """
-    char_width = 7.5  # Average width of a character in pixels
+    char_width = 8  # Average width of a character in pixels
     padding = 25  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
 
@@ -62,7 +62,7 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
         "grandmaster": "#e3653d",
         "challenger": "#43AFEC",
         "error": "#cc0000",
-        "unranked": "#808080"
+        "unranked": "#808080",
     }
     color = colors.get(rank, "#FFFFFF")
 

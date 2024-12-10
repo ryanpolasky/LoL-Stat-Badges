@@ -105,26 +105,38 @@ async def get_summoner_rank(
             data = response.json()
 
             # Locate the proper queue type
-            if data[0]["queueType"] == "RANKED_SOLO_5x5":
-                data = data[0]
-                logger.info("Solo/Duo rank found")
-            elif data[1]["queueType"] == "RANKED_SOLO_5x5":
-                data = data[1]
-                logger.info("Solo/Duo rank found")
-            else:
-                logger.info("Solo/Duo rank not found")
-                return None
+            for rank_info in data:
+                if rank_info.get("queueType") == "RANKED_SOLO_5x5":
+                    logger.info("Solo/Duo rank found")
+                    data = rank_info  # Assign the solo/duo rank data to 'data'
+                    break
 
-            # Return the relevant details
-            relevant_details = {
-                "rank": data["tier"],
-                "div": data["rank"],
-                "summoner_name": summoner_name,
-                "tag_line": tag_line,
-            }
-            logger.info(
-                f"Player {summoner_name}#{tag_line} is rank {data['tier']}, division {data['rank']}"
-            )
+            # Check to see if data is empty after trying to find the queue
+            if not data:
+                # Return the relevant details
+                relevant_details = {
+                    "rank": "unranked",
+                    "div": "n/a",
+                    "summoner_name": summoner_name,
+                    "tag_line": tag_line,
+                }
+                logger.info(
+                    f"Player {summoner_name}#{tag_line} is unranked"
+                )
+
+            else:
+                # Return the relevant details
+                relevant_details = {
+                    "rank": data["tier"],
+                    "div": data["rank"],
+                    "summoner_name": summoner_name,
+                    "tag_line": tag_line,
+                }
+                logger.info(
+                    f"Player {summoner_name}#{tag_line} is rank {data['tier']}, division {data['rank']}"
+                )
+
+            # Return the important information
             return relevant_details
 
         else:  # If the request is not successful,
