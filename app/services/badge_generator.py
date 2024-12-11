@@ -1,7 +1,7 @@
 # Created by Ryan Polasky, 12/3/24
 # All rights reserved
 
-from wcwidth import wcswidth
+from PIL import ImageFont
 import logging
 import base64
 
@@ -16,13 +16,17 @@ def calculate_width(badge_text: str) -> float:
     :param badge_text: The text to be displayed on the badge.
     :return: The width of the rectangle.
     """
-    char_width = 8  # Average width of a character in pixels
+    verdana_path = "assets/fonts/Verdana.ttf"
+
     padding = 25  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
 
-    text_length = wcswidth(badge_text)
-    calculated_width = (text_length * char_width) + padding + icon_size
+    # Load the Verdana font and calculate the text width
+    font = ImageFont.truetype(verdana_path, size=11)  # Match SVG font-size
+    text_width = font.getbbox(badge_text)[2]  # Width of the text
 
+    # Calculate the total width
+    calculated_width = text_width + padding + icon_size
     return calculated_width
 
 
@@ -75,9 +79,9 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
 
     # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
-    <svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 auto 28">
+    <svg xmlns="http://www.w3.org/2000/svg" width="{proper_width}" height="28">
         <!-- Rectangle background -->
-        <rect width="100%" height="28" fill="{color}" />
+        <rect width="{proper_width}" height="28" fill="{color}" />
         
         <!-- Icon -->
         <image href="data:image/png;base64,{base64_rank_img}" x="5" y="0" width="28" height="28" />
