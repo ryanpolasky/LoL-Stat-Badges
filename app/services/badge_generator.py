@@ -1,6 +1,7 @@
 # Created by Ryan Polasky, 12/3/24
 # All rights reserved
 
+from wcwidth import wcswidth
 import logging
 import base64
 
@@ -8,7 +9,6 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-# todo - replace this with dynamic text measuring --> PIL/pillow package?
 def calculate_width(badge_text: str) -> float:
     """
     Dynamically calculates the rectangle width based on the summoner name and tagline length.
@@ -20,8 +20,8 @@ def calculate_width(badge_text: str) -> float:
     padding = 25  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
 
-    total_length = len(badge_text)
-    calculated_width = total_length * char_width + padding + icon_size
+    text_length = wcswidth(badge_text)
+    calculated_width = (text_length * char_width) + padding + icon_size
 
     return calculated_width
 
