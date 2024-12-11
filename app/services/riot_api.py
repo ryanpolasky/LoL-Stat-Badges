@@ -80,12 +80,22 @@ async def get_summoner_rank(
     # First, get the summoner PUUID
     summoner_puuid = await get_summoner_puuid(summoner_name, tag_line, region)
     if not summoner_puuid:
-        return None
+        return {
+            "rank": "error",
+            "div": "n/a",
+            "summoner_name": summoner_name,
+            "tag_line": tag_line,
+        }
 
     # Next, get the summoner Account ID
     summoner_account_id = await get_summoner_account_id(summoner_puuid, region)
     if not summoner_account_id:
-        return None
+        return {
+            "rank": "error",
+            "div": "n/a",
+            "summoner_name": summoner_name,
+            "tag_line": tag_line,
+        }
 
     # Finally, get the actual rank of the user
     curr_region = calculate_region(region, False)
@@ -139,7 +149,12 @@ async def get_summoner_rank(
 
         else:  # If the request is not successful,
             logger.info("Request for rank data unsuccessful")
-            return None
+            return {
+                "rank": "error",
+                "div": "n/a",
+                "summoner_name": summoner_name,
+                "tag_line": tag_line,
+            }
 
 
 def calculate_region(region: str, by_area: bool) -> str:

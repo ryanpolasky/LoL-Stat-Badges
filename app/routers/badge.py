@@ -88,6 +88,7 @@ async def get_badge(
                 detail=f"An error occurred while generating the badge: {e}",
             )
     else:  # If the user's configuration is incorrect,
+        # todo - fix this, { "detail": "An error occurred while generating the badge: 'NoneType' object is not subscriptable" }
         logger.info(
             f"\nConfiguration {safe_summoner}#{tag_line} in region {region} invalid..."
         )
