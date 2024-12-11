@@ -21,15 +21,19 @@ def calculate_width(badge_text: str) -> float:
     verdana_path = "app/assets/fonts/Verdana.ttf"
     noto_path = "app/assets/fonts/NotoSansCJK.otf"
 
-    padding = 27  # Extra padding for aesthetic spacing
+    padding = 25  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
-    font_remediation = 0  # Init empty var to account for font differences
+    spacing_width = 0  # Init empty var to account for font differences
 
     try:
         font = ImageFont.truetype(verdana_path, size=11)  # Match SVG font-size
+
+        # Account for letter spacing by adding extra space for each character (if needed)
+        letter_spacing = 1  # You can adjust this value based on the desired letter spacing
+        spacing_width = len(badge_text) * letter_spacing
+
     except IOError:
         font = ImageFont.truetype(noto_path, size=11)  # Use NotoSansCJK if Verdana fails
-        font_remediation = -3
 
     # Create a dummy image and drawing context to calculate text size
     dummy_image = Image.new("RGB", (1, 1))  # Small image for text sizing
@@ -38,12 +42,10 @@ def calculate_width(badge_text: str) -> float:
     # Get the text width using the font and calculate the bounding box
     text_width = draw.textbbox((0, 0), badge_text, font=font)[2]  # Width of the text
 
-    # Account for letter spacing by adding extra space for each character (if needed)
-    letter_spacing = 1  # You can adjust this value based on the desired letter spacing
-    spacing_width = len(badge_text) * letter_spacing
+
 
     # Calculate the total width, adding padding and icon space
-    calculated_width = text_width + spacing_width + padding + icon_size + font_remediation
+    calculated_width = text_width + spacing_width + padding + icon_size
 
     return calculated_width
 
@@ -103,10 +105,10 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
         <rect width="{proper_width}" height="28" fill="{color}" />
         
         <!-- Icon -->
-        <image href="data:image/png;base64,{base64_rank_img}" x="7" y="0" width="28" height="28" />
+        <image href="data:image/png;base64,{base64_rank_img}" x="5" y="0" width="28" height="28" />
         
         <!-- Text -->
-        <text x="40" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle" letter-spacing="1">
+        <text x="28" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle" letter-spacing="1">
             {badge_text}
         </text>
     </svg>
