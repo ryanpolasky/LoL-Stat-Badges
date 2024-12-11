@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
+from PIL import Image, ImageDraw, ImageFont
+
 def calculate_width(badge_text: str) -> float:
     """
     Dynamically calculates the rectangle width based on the summoner name and tagline length.
@@ -17,17 +19,32 @@ def calculate_width(badge_text: str) -> float:
     :return: The width of the rectangle.
     """
     verdana_path = "app/assets/fonts/Verdana.ttf"
+    noto_path = "app/assets/fonts/NotoSansCJK.otf"
 
     padding = 25  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
 
-    # Load the Verdana font and calculate the text width
-    font = ImageFont.truetype(verdana_path, size=11)  # Match SVG font-size
-    text_width = font.getbbox(badge_text)[2]  # Width of the text
+    try:
+        font = ImageFont.truetype(verdana_path, size=11)  # Match SVG font-size
+    except IOError:
+        font = ImageFont.truetype(noto_path, size=11)  # Use NotoSansCJK if Verdana fails
 
-    # Calculate the total width
-    calculated_width = text_width + padding + icon_size
+    # Create a dummy image and drawing context to calculate text size
+    dummy_image = Image.new("RGB", (1, 1))  # Small image for text sizing
+    draw = ImageDraw.Draw(dummy_image)
+
+    # Get the text width using the font and calculate the bounding box
+    text_width = draw.textbbox((0, 0), badge_text, font=font)[2]  # Width of the text
+
+    # Account for letter spacing by adding extra space for each character (if needed)
+    letter_spacing = 1  # You can adjust this value based on the desired letter spacing
+    spacing_width = len(badge_text) * letter_spacing
+
+    # Calculate the total width, adding padding and icon space
+    calculated_width = text_width + spacing_width + padding + icon_size
+
     return calculated_width
+
 
 
 def encode_image_to_base64(image_path: str):
