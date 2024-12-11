@@ -75,9 +75,9 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
 
     # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
-    <svg xmlns="http://www.w3.org/2000/svg" width="{proper_width}" height="28">
+    <svg xmlns="http://www.w3.org/2000/svg" height="28" viewBox="0 0 auto 28">
         <!-- Rectangle background -->
-        <rect width="{proper_width}" height="28" fill="{color}" />
+        <rect width="100%" height="28" fill="{color}" />
         
         <!-- Icon -->
         <image href="data:image/png;base64,{base64_rank_img}" x="5" y="0" width="28" height="28" />
