@@ -16,7 +16,7 @@ def calculate_width(badge_text: str) -> float:
     :param badge_text: The text to be displayed on the badge.
     :return: The width of the rectangle.
     """
-    verdana_path = "assets/fonts/Verdana.ttf"
+    verdana_path = "app/assets/fonts/Verdana.ttf"
 
     padding = 25  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
