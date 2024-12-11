@@ -42,8 +42,6 @@ def calculate_width(badge_text: str) -> float:
     # Get the text width using the font and calculate the bounding box
     text_width = draw.textbbox((0, 0), badge_text, font=font)[2]  # Width of the text
 
-
-
     # Calculate the total width, adding padding and icon space
     calculated_width = text_width + spacing_width + padding + icon_size
 
@@ -108,7 +106,7 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
         <image href="data:image/png;base64,{base64_rank_img}" x="5" y="0" width="28" height="28" />
         
         <!-- Text -->
-        <text x="28" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle" letter-spacing="1">
+        <text x="38" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle" letter-spacing="1">
             {badge_text}
         </text>
     </svg>

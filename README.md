@@ -60,6 +60,7 @@ embed URL.
   - Currently only functions with Solo/Duo queue
 - ~~Check if Teamfight Tactics (TFT) support can be added & implement it if it can be~~
   - Looks like TFT can be added! 
+- Add champion mastery as a style option
 - ~~Add support for non-Latin/CJK characters~~
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
