@@ -43,7 +43,7 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
     summoner_name = rank_data["summoner_name"]
     tag_line = rank_data["tag_line"]
 
-    if use_rank_name:
+    if use_rank_name or rank == "error":
         badge_text = rank.upper()
     else:
         badge_text = f"{summoner_name}#{tag_line}"
