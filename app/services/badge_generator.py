@@ -1,15 +1,14 @@
 # Created by Ryan Polasky, 12/3/24
 # All rights reserved
 
-from PIL import ImageFont
+from PIL import Image, ImageDraw, ImageFont
 import logging
 import base64
+from app.config import constants
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-
-from PIL import Image, ImageDraw, ImageFont
 
 def calculate_width(badge_text: str) -> float:
     """
@@ -21,7 +20,7 @@ def calculate_width(badge_text: str) -> float:
     verdana_path = "app/assets/fonts/Verdana.ttf"
     noto_path = "app/assets/fonts/NotoSansCJK.otf"
 
-    padding = 25  # Extra padding for aesthetic spacing
+    padding = 22  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
     spacing_width = 0  # Init empty var to account for font differences
 
@@ -29,11 +28,15 @@ def calculate_width(badge_text: str) -> float:
         font = ImageFont.truetype(verdana_path, size=11)  # Match SVG font-size
 
         # Account for letter spacing by adding extra space for each character (if needed)
-        letter_spacing = 1  # You can adjust this value based on the desired letter spacing
+        letter_spacing = (
+            1  # You can adjust this value based on the desired letter spacing
+        )
         spacing_width = len(badge_text) * letter_spacing
 
     except IOError:
-        font = ImageFont.truetype(noto_path, size=11)  # Use NotoSansCJK if Verdana fails
+        font = ImageFont.truetype(
+            noto_path, size=11
+        )  # Use NotoSansCJK if Verdana fails
 
     # Create a dummy image and drawing context to calculate text size
     dummy_image = Image.new("RGB", (1, 1))  # Small image for text sizing
@@ -46,7 +49,6 @@ def calculate_width(badge_text: str) -> float:
     calculated_width = text_width + spacing_width + padding + icon_size
 
     return calculated_width
-
 
 
 def encode_image_to_base64(image_path: str):
@@ -74,21 +76,7 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
     logger.info(f"`generate_badge` started for player {summoner_name}#{tag_line}")
 
     # Determine badge color based on rank, defaulting to light grey for unranked
-    colors = {
-        "iron": "#3c2f2a",
-        "bronze": "#ae6f5b",
-        "silver": "#7c8892",
-        "gold": "#ae8a5a",
-        "platinum": "#97eaf0",
-        "emerald": "#33b86f",
-        "diamond": "#218dc6",
-        "master": "#ba48e1",
-        "grandmaster": "#e3653d",
-        "challenger": "#43AFEC",
-        "error": "#cc0000",
-        "unranked": "#808080",
-    }
-    color = colors.get(rank, "#FFFFFF")
+    color = constants.colors.get(rank, "#FFFFFF")
 
     # Calculate proper width for badge
     proper_width = calculate_width(badge_text)

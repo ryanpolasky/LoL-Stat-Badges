@@ -60,6 +60,22 @@ class Constants:
             "REGION": "https://sea.api.riotgames.com",
         },
     }
+
+    colors = {
+        "iron": "#3c2f2a",
+        "bronze": "#ae6f5b",
+        "silver": "#7c8892",
+        "gold": "#ae8a5a",
+        "platinum": "#97eaf0",
+        "emerald": "#33b86f",
+        "diamond": "#218dc6",
+        "master": "#ba48e1",
+        "grandmaster": "#e3653d",
+        "challenger": "#43AFEC",
+        "error": "#cc0000",
+        "unranked": "#808080",
+    }
+
     CACHE_TTL: int = 3600  # Cache time-to-live in seconds
 
 
