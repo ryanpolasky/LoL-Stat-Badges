@@ -21,13 +21,15 @@ def calculate_width(badge_text: str) -> float:
     verdana_path = "app/assets/fonts/Verdana.ttf"
     noto_path = "app/assets/fonts/NotoSansCJK.otf"
 
-    padding = 25  # Extra padding for aesthetic spacing
+    padding = 27  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
+    font_remediation = 0  # Init empty var to account for font differences
 
     try:
         font = ImageFont.truetype(verdana_path, size=11)  # Match SVG font-size
     except IOError:
         font = ImageFont.truetype(noto_path, size=11)  # Use NotoSansCJK if Verdana fails
+        font_remediation = -3
 
     # Create a dummy image and drawing context to calculate text size
     dummy_image = Image.new("RGB", (1, 1))  # Small image for text sizing
@@ -41,7 +43,7 @@ def calculate_width(badge_text: str) -> float:
     spacing_width = len(badge_text) * letter_spacing
 
     # Calculate the total width, adding padding and icon space
-    calculated_width = text_width + spacing_width + padding + icon_size
+    calculated_width = text_width + spacing_width + padding + icon_size + font_remediation
 
     return calculated_width
 
@@ -101,10 +103,10 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
         <rect width="{proper_width}" height="28" fill="{color}" />
         
         <!-- Icon -->
-        <image href="data:image/png;base64,{base64_rank_img}" x="5" y="0" width="28" height="28" />
+        <image href="data:image/png;base64,{base64_rank_img}" x="7" y="0" width="28" height="28" />
         
         <!-- Text -->
-        <text x="38" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle" letter-spacing="1">
+        <text x="40" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle" letter-spacing="1">
             {badge_text}
         </text>
     </svg>
