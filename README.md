@@ -10,10 +10,11 @@ Have you ever wished you could display your accomplishments in League of Legends
 GitHub tech stack? No? Well too bad! Introducing **LoL Stat Badges**! Display your League of Legends rank on your GitHub 
 README files or anywhere else that supports SVG embeds!
 
-![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE)&nbsp;
-![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Shua/EGGGY?rank_name=true)&nbsp;
-![League of Legends](https://lol-stat-badges.onrender.com/badge/KR/Hide%20on%20bush/KR1)&nbsp;
-![League of Legends](https://lol-stat-badges.onrender.com/badge/NA1/Solomon/NA0?rank_name=true)&nbsp;
+![LoL Unranked](https://lol-stat-badges.onrender.com/badge/NA1/BadPunOTD/NA1?rank_name=True)&nbsp;
+![Lol Self](https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE)&nbsp;
+![LoL Friend](https://lol-stat-badges.onrender.com/badge/NA1/Shua/EGGGY?rank_name=true)&nbsp;
+![LoL Faker](https://lol-stat-badges.onrender.com/badge/KR/Hide%20on%20bush/KR1)&nbsp;
+![LoL Other Friend](https://lol-stat-badges.onrender.com/badge/NA1/Solomon/NA0?rank_name=true)&nbsp;
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
@@ -46,6 +47,10 @@ To display your degeneracy, follow the steps below:
 
 If you want the badge to show the name of the rank instead of your Riot ID, include `?rank_name=true` at end of your 
 embed URL.
+
+If you see a badge similar to below, double-check your Riot ID or region, as one or more of the arguments are incorrect.
+
+
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
