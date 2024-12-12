@@ -48,10 +48,6 @@ To display your degeneracy, follow the steps below:
 If you want the badge to show the name of the rank instead of your Riot ID, include `?rank_name=true` at end of your 
 embed URL.
 
-If you see a badge similar to below, double-check your Riot ID or region, as one or more of the arguments are incorrect.
-
-
-
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
 ### *Next Steps*:
@@ -71,6 +67,7 @@ If you see a badge similar to below, double-check your Riot ID or region, as one
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
 ### *Issues/Contact*:
+If a red badge renders with "ERROR" written on it, double-check your arguments, as one or more argument is invalid.
 If there are any issues with the API, or if you need to contact me for any other reason, please use my Email or LinkedIn below! 
 
 <div align="center">
