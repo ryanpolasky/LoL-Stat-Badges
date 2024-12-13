@@ -63,6 +63,7 @@ embed URL.
   - Looks like TFT can be added! 
 - Add champion mastery as a style option
 - ~~Add support for non-Latin/CJK characters~~
+- Maybe create standardized Riot API Python wrapper package if one doesn't already exist
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
