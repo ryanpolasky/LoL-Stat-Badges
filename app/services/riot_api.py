@@ -1,19 +1,18 @@
 # Created by Ryan Polasky, 12/3/24
 # All rights reserved
-from typing import Any
 
+from typing import Any
 import httpx
 import logging
 from app.config import settings, constants, InvalidRegionException
 
-endpoints = constants.RIOT_ENDPOINTS
+RIOT_ENDPOINTS = constants.RIOT_ENDPOINTS
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 async def get_summoner_puuid(
-    summoner_name: str, tag_line: str, region: str
+        summoner_name: str, tag_line: str, region: str
 ) -> str | None:
     """
     Function used to request the PUUID for a player using their Summoner Name, their tag, and their region.
@@ -23,49 +22,46 @@ async def get_summoner_puuid(
     :param region: The region of your account. Example: 'NA1'
     :return: Returns the PUUID of the player.
     """
-    logger.info(f"Getting PUUID for {summoner_name}#{tag_line} in {region}...")
+    logger.info(f"Attempting to retrieve PUUID for {summoner_name}#{tag_line} in region {region}...")
 
-    curr_region = calculate_region(region, True)
+    try:
+        curr_region_base_url = calculate_region(region, True)
+    except InvalidRegionException:
+        logger.error(f"Invalid region provided for PUUID lookup: {region}")
+        return None
 
     url = (
-        f"{curr_region}/riot/account/v1/accounts/by-riot-id/{summoner_name}/{tag_line}"
+        f"{curr_region_base_url}/riot/account/v1/accounts/by-riot-id/{summoner_name}/{tag_line}"
     )
-    logger.info(url)
+    logger.info(f"Riot API PUUID URL: {url}")
     headers = {"X-Riot-Token": settings.RIOT_API_KEY}
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(url, headers=headers)
-        if response.status_code == 200:
-            puuid = response.json()["puuid"]
-            logger.info(f"PUUID found: {puuid}")
-            return puuid
-        else:
-            logger.info("PUUID not found")
+        try:
+            response = await client.get(url, headers=headers)
+            response.raise_for_status()
+
+            puuid = response.json().get("puuid")
+            if puuid:
+                logger.info(f"PUUID found for {summoner_name}#{tag_line}: {puuid}")
+                return puuid
+            else:
+                logger.warning(f"PUUID not found in response for {summoner_name}#{tag_line}. Response: {response.text}")
+                return None
+        except httpx.HTTPStatusError as e:
+            logger.error(
+                f"HTTP error retrieving PUUID for {summoner_name}#{tag_line}: {e.response.status_code} - {e.response.text}")
+            return None
+        except httpx.RequestError as e:
+            logger.error(f"Network error retrieving PUUID for {summoner_name}#{tag_line}: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"An unexpected error occurred while getting PUUID for {summoner_name}#{tag_line}: {e}")
             return None
 
 
-async def get_summoner_account_id(puuid: str, region: str) -> str | None:
-    """
-    Function used to request the Account ID for a player using their PUUID and their region.
-    :param puuid: The PUUID of the account obtained from `get_summoner_puuid`.
-    :param region: The region of your account. Example: 'NA1'
-    :return: Returns the Account ID of the player.
-    """
-    logger.info(f"Getting Account ID for PUUID {puuid} in {region}...")
-
-    curr_region = calculate_region(region, False)
-    url = f"{curr_region}/lol/summoner/v4/summoners/by-puuid/{puuid}"
-    headers = {"X-Riot-Token": settings.RIOT_API_KEY}
-
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url, headers=headers)
-        if response.status_code == 200:
-            return response.json()["id"]
-        return None
-
-
 async def get_summoner_rank(
-    summoner_name: str, tag_line: str, region: str
+        summoner_name: str, tag_line: str, region: str
 ) -> Any | None:
     """
     Function used to request the rank data for a player using their Summoner Name, their tag, and their region.
@@ -75,116 +71,122 @@ async def get_summoner_rank(
     :param region: The region of your account. Example: 'NA1'
     :return: Returns the rank data of the player.
     """
-    logger.info("`get_summoner_rank` called...")
+    logger.info(f"Initiating rank data retrieval for {summoner_name}#{tag_line} in region {region}...")
 
     # First, get the summoner PUUID
     summoner_puuid = await get_summoner_puuid(summoner_name, tag_line, region)
     if not summoner_puuid:
+        logger.warning(f"Failed to get PUUID for {summoner_name}#{tag_line}. Cannot proceed with rank lookup.")
         return {
             "rank": "error",
             "div": "n/a",
             "summoner_name": summoner_name,
             "tag_line": tag_line,
+            "error_message": "PUUID not found or invalid."
         }
 
-    # Next, get the summoner Account ID
-    summoner_account_id = await get_summoner_account_id(summoner_puuid, region)
-    if not summoner_account_id:
+    # Next, get the actual rank of the user using their PUUID
+    try:
+        curr_region_base_url = calculate_region(region, False)
+    except InvalidRegionException:
+        logger.error(f"Invalid region provided for rank lookup: {region}")
         return {
             "rank": "error",
             "div": "n/a",
             "summoner_name": summoner_name,
             "tag_line": tag_line,
+            "error_message": "Invalid region for rank lookup."
         }
 
-    # Finally, get the actual rank of the user
-    curr_region = calculate_region(region, False)
-    url = f"{curr_region}/lol/league/v4/entries/by-summoner/{summoner_account_id}"
+    url = f"{curr_region_base_url}/lol/league/v4/entries/by-puuid/{summoner_puuid}"
+    logger.info(f"Riot API League Entry URL: {url}")
     headers = {"X-Riot-Token": settings.RIOT_API_KEY}
 
-    # Return the tier & rank of the player
     async with httpx.AsyncClient() as client:
-        # Make the request
-        logger.info("Requesting rank data...")
-        response = await client.get(url, headers=headers)
+        try:
+            logger.info("Requesting rank data from League-v4 endpoint...")
+            response = await client.get(url, headers=headers)
+            response.raise_for_status()
 
-        if response.status_code == 200:  # If the request is successful,
-            logger.info("Rank data retrieved successfully")
-
-            # Parse the data into Pythonic format
+            logger.info("Rank data retrieved successfully from League-v4 endpoint.")
             data = response.json()
 
-            # Locate the proper queue type
-            for rank_info in data:
-                if rank_info.get("queueType") == "RANKED_SOLO_5x5":
-                    logger.info("Solo/Duo rank found")
-                    data = rank_info  # Assign the solo/duo rank data to 'data'
-                    break
-
-            # Check to see if data is empty after trying to find the queue
-            if not data:
-                # Return the relevant details
-                relevant_details = {
-                    "rank": "unranked",
-                    "div": "n/a",
-                    "summoner_name": summoner_name,
-                    "tag_line": tag_line,
-                }
-                logger.info(f"Player {summoner_name}#{tag_line} is unranked")
-
-            else:
-                # Return the relevant details
-                relevant_details = {
-                    "rank": data["tier"],
-                    "div": data["rank"],
-                    "summoner_name": summoner_name,
-                    "tag_line": tag_line,
-                }
-                logger.info(
-                    f"Player {summoner_name}#{tag_line} is rank {data['tier']}, division {data['rank']}"
-                )
-
-            # Return the important information
-            return relevant_details
-
-        else:  # If the request is not successful,
-            logger.info("Request for rank data unsuccessful")
-            return {
-                "rank": "error",
+            relevant_details = {
+                "rank": "unranked",
                 "div": "n/a",
                 "summoner_name": summoner_name,
                 "tag_line": tag_line,
             }
 
+            # Locate the proper queue type (Solo/Duo)
+            for rank_info in data:
+                if rank_info.get("queueType") == "RANKED_SOLO_5x5":
+                    logger.info("Solo/Duo rank found.")
+                    relevant_details["rank"] = rank_info["tier"]
+                    relevant_details["div"] = rank_info["rank"]
+                    logger.info(
+                        f"Player {summoner_name}#{tag_line} is rank {relevant_details['rank']}, division {relevant_details['div']}"
+                    )
+                    break
+
+            if relevant_details["rank"] == "unranked":
+                logger.info(f"Player {summoner_name}#{tag_line} is unranked in Solo/Duo.")
+
+            return relevant_details
+
+        except httpx.HTTPStatusError as e:
+            logger.error(
+                f"HTTP error retrieving rank data for {summoner_name}#{tag_line}: {e.response.status_code} - {e.response.text}")
+            return {
+                "rank": "error",
+                "div": "n/a",
+                "summoner_name": summoner_name,
+                "tag_line": tag_line,
+                "error_message": f"Riot API HTTP Error: {e.response.status_code}"
+            }
+        except httpx.RequestError as e:
+            logger.error(f"Network error retrieving rank data for {summoner_name}#{tag_line}: {e}")
+            return {
+                "rank": "error",
+                "div": "n/a",
+                "summoner_name": summoner_name,
+                "tag_line": tag_line,
+                "error_message": f"Network Error: {e}"
+            }
+        except Exception as e:
+            logger.error(f"An unexpected error occurred while getting rank data for {summoner_name}#{tag_line}: {e}")
+            return {
+                "rank": "error",
+                "div": "n/a",
+                "summoner_name": summoner_name,
+                "tag_line": tag_line,
+                "error_message": f"Unexpected Error: {e}"
+            }
+
 
 def calculate_region(region: str, by_area: bool) -> str:
     """
-    Calculates the proper endpoint for usage dependent on the passed region & whether it's a modern route.
-    :param region: The region provided by the user.
-    :param by_area: Whether we want the general regional endpoint or a specific region's endpoint.
-    :return: The proper endpoint.
+    Calculates the proper base URL for usage dependent on the passed region & whether it's a modern route.
+    :param region: The region provided by the user. E.g., 'NA1', 'EUW1'.
+    :param by_area: Whether we want the general regional endpoint (e.g., 'AMERICAS') or a specific region's endpoint (e.g., 'NA1').
+                    True for regional routing (e.g., account-v1), False for platform routing (e.g., summoner-v4, league-v4).
+    :return: The proper base URL for the Riot API.
     """
-    if region in endpoints["AMERICAS"]:
-        if by_area:
-            response = endpoints["AMERICAS"]["REGION"]
-        else:
-            response = endpoints["AMERICAS"][region]
-    elif region in endpoints["ASIA"]:
-        if by_area:
-            response = endpoints["ASIA"]["REGION"]
-        else:
-            response = endpoints["ASIA"][region]
-    elif region in endpoints["EUROPE"]:
-        if by_area:
-            response = endpoints["EUROPE"]["REGION"]
-        else:
-            response = endpoints["EUROPE"][region]
-    elif region in endpoints["SEA"]:
-        if by_area:
-            response = endpoints["SEA"]["REGION"]
-        else:
-            response = endpoints["SEA"][region]
+    region_upper = region.upper()
+
+    area = None
+    for area_name, regions_map in RIOT_ENDPOINTS.items():
+        if region_upper in regions_map and area_name != "DEFAULT_REGION_KEY":
+            area = area_name
+            break
+
+    if not area:
+        logger.error(f"Region '{region}' not found in defined endpoints.")
+        raise InvalidRegionException(f"Invalid region: {region}")
+
+    if by_area:
+        response = RIOT_ENDPOINTS[area]["REGION"]
     else:
-        logger.info("Region not found")
-        raise InvalidRegionException
+        response = RIOT_ENDPOINTS[area][region_upper]
+
     return response
