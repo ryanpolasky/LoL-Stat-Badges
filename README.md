@@ -10,11 +10,9 @@ Have you ever wished you could display your accomplishments in League of Legends
 GitHub tech stack? No? Well too bad! Introducing **LoL Stat Badges**! Display your League of Legends rank on your GitHub 
 README files or anywhere else that supports SVG embeds!
 
-![LoL Unranked](https://lol-stat-badges.onrender.com/badge/NA1/BadPunOTD/NA1?rank_name=True)&nbsp;
-![Lol Self](https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE)&nbsp;
-![LoL Friend](https://lol-stat-badges.onrender.com/badge/NA1/Shua/EGGGY?rank_name=true)&nbsp;
-![LoL Faker](https://lol-stat-badges.onrender.com/badge/KR/Hide%20on%20bush/KR1)&nbsp;
-![LoL Other Friend](https://lol-stat-badges.onrender.com/badge/NA1/Solomon/NA0?rank_name=true)&nbsp;
+![Lol Self](https://api.ryanpolasky.com/lol/badge/NA1/Eggy/NEW)&nbsp;
+![LoL Friend](https://api.ryanpolasky.com/lol/badge/NA1/Shua/EGGGY?rank_name=true)&nbsp;
+![LoL Faker](https://api.ryanpolasky.com/lol/badge/KR/Hide%20on%20bush/KR1)&nbsp;
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
@@ -36,14 +34,14 @@ README files or anywhere else that supports SVG embeds!
 
 To display your degeneracy, follow the steps below:
 
-- Embed the base URL - `https://lol-stat-badges.onrender.com/badge`
-- Add your region ([options listed here](https://github.com/ryanpolasky/LoL-Stat-Badges/blob/main/app/config.py)) to the path - `https://lol-stat-badges.onrender.com/badge/NA1`
-- Add your Riot ID name to the path - `https://lol-stat-badges.onrender.com/badge/NA1/Eggo`
+- Embed the base URL - `https://api.ryanpolasky.com/lol/badge`
+- Add your region ([options listed here](https://github.com/ryanpolasky/LoL-Stat-Badges/blob/main/app/config.py)) to the path - `https://api.ryanpolasky.com/lol/badge/NA1`
+- Add your Riot ID name to the path - `https://api.ryanpolasky.com/lol/badge/NA1/Eggy`
   - If your Riot ID name has spaces, replace them with `%20` in the URL
   - Note: This API currently does not work with 
-- Add your Riot ID tag to the path - `https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE`
-- Embed your shame into your GitHub README - `![LoL Stat Badge](https://lol-stat-badges.onrender.com/badge/NA1/Eggo/WFLE)&nbsp;`
-  - The `&nbsp;` tag is simply for formatting, so feel free to omit it at will
+- Add your Riot ID tag to the path - `https://api.ryanpolasky.com/lol/badge/NA1/Eggy/NEW`
+- Embed your shame into your GitHub README - `![LoL Stat Badge](https://api.ryanpolasky.com/lol/badge/NA1/Eggy/NEW)&nbsp;`
+  - The `&nbsp;` tag is simply for formatting, so feel free to omit it if desired :)
 
 If you want the badge to show the name of the rank instead of your Riot ID, include `?rank_name=true` at end of your 
 embed URL.
