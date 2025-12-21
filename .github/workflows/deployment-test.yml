@@ -21,7 +21,7 @@ jobs:
 
       - name: Send a ping request to the API endpoint
         run: |
-          RESPONSE=$(curl --write-out "%{http_code}" --silent --output /dev/null https://lol-stat-badges.onrender.com)
+          RESPONSE=$(curl --write-out "%{http_code}" --silent --output /dev/null https://api.ryanpolasky.com/lol)
           if [ "$RESPONSE" -ne 200 ]; then
             echo "API endpoint failed with status code $RESPONSE"
             exit 1
