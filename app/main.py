@@ -15,7 +15,7 @@ import os
 import requests
 from requests.exceptions import RequestException
 
-app = FastAPI()
+app = FastAPI(root_path="/lol")
 
 logger = logging.getLogger(__name__)
 
