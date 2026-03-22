@@ -1,22 +1,41 @@
 # Created by Ryan Polasky, 12/3/24
 # All rights reserved
 
-from fastapi import APIRouter, HTTPException, Query, status
-from fastapi.responses import Response, PlainTextResponse
+from fastapi import APIRouter, HTTPException, Query, BackgroundTasks, status
+from fastapi.responses import Response
 import regex as re
 import logging
 from discord_webhook import DiscordWebhook
-from app.config import Settings, InvalidRegionException
+from app.config import Settings
 from app.services.riot_api import get_summoner_rank
-from app.services.badge_generator import generate_badge  # Assuming this function exists and works
+from app.services.badge_generator import generate_badge
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.get("/{region}/{summoner}/{tag_line}", response_class=PlainTextResponse)
+def _send_webhook(summoner: str, tag_line: str, region: str):
+    """Send a Discord notification for API usage tracking (runs in background)."""
+    if not Settings.DISCORD_WEBHOOK:
+        return
+    Settings.API_CALLS += 1
+    try:
+        webhook = DiscordWebhook(
+            url=Settings.DISCORD_WEBHOOK,
+            content=f"Call #{Settings.API_CALLS}: {summoner}#{tag_line} in region {region}",
+        )
+        webhook.execute()
+    except Exception as e:
+        logger.warning(f"Discord webhook failed: {e}")
+
+
+@router.get("/{region}/{summoner}/{tag_line}")
 async def get_badge(
-        region: str, summoner: str, tag_line: str, rank_name: bool = Query(False)
+    region: str,
+    summoner: str,
+    tag_line: str,
+    rank_name: bool = Query(False),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
 ):
     """
     Generates a badge for a summoner's rank.
@@ -25,27 +44,16 @@ async def get_badge(
     valid_user = True
     error_message = ""
 
-    # Handle spaces in usernames
-    safe_summoner = summoner.replace("%20", " ")
-
-    # Send a webhook to creator's Discord for sake of counting the API's users
-    Settings.API_CALLS += 1
-    webhook = DiscordWebhook(
-        url=Settings.DISCORD_WEBHOOK,  # Use Settings.DISCORD_WEBHOOK
-        content=f"Call #{Settings.API_CALLS}: {safe_summoner}#{tag_line} in region {region}",
-    )
-    # Execute webhook in a non-blocking way if possible, or consider a background task
-    # For simplicity, keeping it as is, but for high traffic, this could block.
-    _ = webhook.execute()
+    background_tasks.add_task(_send_webhook, summoner, tag_line, region)
 
     # Check for summoner name being too long
-    if len(safe_summoner) > 16:
+    if len(summoner) > 16:
         valid_user = False
         error_message = "Summoner name too long (max 16 characters)."
 
     # Disallow only control characters and symbols
     pattern = r"^[^\p{C}\p{So}]*$"
-    if valid_user and not re.match(pattern, safe_summoner):
+    if valid_user and not re.match(pattern, summoner):
         valid_user = False
         error_message = "Summoner name contains invalid characters."
 
@@ -64,34 +72,38 @@ async def get_badge(
         try:
             # Fetch rank data from Riot API
             logger.info(
-                f"Trying to retrieve rank data for user {safe_summoner}#{tag_line} in region {region}..."
+                f"Trying to retrieve rank data for user {summoner}#{tag_line} in region {region}..."
             )
-            rank_data = await get_summoner_rank(safe_summoner, tag_line, region)
+            rank_data = await get_summoner_rank(summoner, tag_line, region)
 
             # Check if get_summoner_rank returned an error dictionary
             if rank_data and rank_data.get("rank") == "error":
                 # Propagate the error message from riot_api.py
-                detail_message = rank_data.get("error_message", "Unknown error from Riot API.")
+                detail_message = rank_data.get(
+                    "error_message", "Unknown error from Riot API."
+                )
                 logger.error(f"Failed to retrieve rank data: {detail_message}")
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"An error occurred while fetching rank data: {detail_message}",
+                    detail="An error occurred while fetching rank data.",
                 )
 
             logger.info(f"Rank data found: {rank_data}")
             # Generate the badge as an SVG
             logger.info(
-                f"Trying to generate badge for user {safe_summoner}#{tag_line} in region {region}..."
+                f"Trying to generate badge for user {summoner}#{tag_line} in region {region}..."
             )
             badge_svg = generate_badge(rank_data, rank_name)
             logger.info(
-                f"Badge successfully generated for {safe_summoner}#{tag_line} in region {region}!"
+                f"Badge successfully generated for {summoner}#{tag_line} in region {region}!"
             )
 
             # Generate the response & return it
-            response = Response(badge_svg, media_type="image/svg+xml")
+            response = Response(
+                badge_svg, media_type="image/svg+xml", status_code=status.HTTP_200_OK
+            )
             response.headers["Cache-Control"] = "no-cache"
-            return Response(badge_svg, media_type="image/svg+xml", status_code=status.HTTP_200_OK)
+            return response
 
         # If an actual HTTP exception is raised, allow it to raise
         except HTTPException as e:
@@ -99,29 +111,33 @@ async def get_badge(
 
         # If some other Pythonic exception is raised, package it into an HTTP exception
         except Exception as e:
-            logger.error(f"An unexpected error occurred in badge generation: {e}", exc_info=True)
+            logger.error(
+                f"An unexpected error occurred in badge generation: {e}", exc_info=True
+            )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"An unexpected error occurred while generating the badge: {e}",
+                detail="An unexpected error occurred while generating the badge.",
             )
     else:  # If the user's configuration is incorrect,
         logger.warning(
-            f"Invalid user configuration for {safe_summoner}#{tag_line} in region {region}. Reason: {error_message}"
+            f"Invalid user configuration for {summoner}#{tag_line} in region {region}. Reason: {error_message}"
         )
 
         # Create mock data to call `generate_badge` with for an error badge
         rank_data = {
             "rank": "error",
             "div": "n/a",
-            "summoner_name": safe_summoner,
+            "summoner_name": summoner,
             "tag_line": tag_line,
-            "error_message": error_message  # Pass the specific error message for the badge
+            "error_message": error_message,
         }
 
         # Generate the error badge
         badge_svg = generate_badge(rank_data, True)
 
         # Generate the response & return it
-        response = Response(badge_svg, media_type="image/svg+xml")
+        response = Response(
+            badge_svg, media_type="image/svg+xml", status_code=status.HTTP_200_OK
+        )
         response.headers["Cache-Control"] = "no-cache"
-        return Response(badge_svg, media_type="image/svg+xml", status_code=status.HTTP_200_OK)
+        return response

@@ -2,6 +2,9 @@
 # All rights reserved
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class Settings:
@@ -66,7 +69,7 @@ class Constants:
         "bronze": "#ae6f5b",
         "silver": "#7c8892",
         "gold": "#ae8a5a",
-        "platinum": "#97eaf0",
+        "platinum": "#4da8b5",
         "emerald": "#33b86f",
         "diamond": "#218dc6",
         "master": "#ba48e1",

@@ -4,6 +4,7 @@
 import uvicorn
 import time
 import json
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -12,10 +13,18 @@ import logging
 from discord_webhook import DiscordWebhook
 from app.config import Settings
 import os
-import requests
 from requests.exceptions import RequestException
 
-app = FastAPI(root_path="/lol")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    from app.services.riot_api import http_client
+
+    await http_client.aclose()
+
+
+app = FastAPI(root_path="/lol", lifespan=lifespan)
 
 logger = logging.getLogger(__name__)
 

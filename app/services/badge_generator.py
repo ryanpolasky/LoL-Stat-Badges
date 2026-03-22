@@ -1,13 +1,35 @@
 # Created by Ryan Polasky, 12/3/24
 # All rights reserved
 
-from PIL import Image, ImageDraw, ImageFont
-import logging
+import os
+import html
 import base64
+import logging
+from PIL import Image, ImageDraw, ImageFont
 from app.config import constants
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+
+_ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
+
+try:
+    _FONT = ImageFont.truetype(
+        os.path.join(_ASSETS_DIR, "fonts", "Verdana.ttf"), size=11
+    )
+except IOError:
+    _FONT = ImageFont.truetype(
+        os.path.join(_ASSETS_DIR, "fonts", "NotoSansCJK.otf"), size=11
+    )
+
+_RANK_IMAGES: dict[str, str] = {}
+for _rank_name in constants.colors:
+    _img_path = os.path.join(_ASSETS_DIR, f"{_rank_name}.png")
+    if os.path.exists(_img_path):
+        with open(_img_path, "rb") as _f:
+            _RANK_IMAGES[_rank_name] = base64.b64encode(_f.read()).decode("utf-8")
+
+_DUMMY_IMAGE = Image.new("RGB", (1, 1))
+_DUMMY_DRAW = ImageDraw.Draw(_DUMMY_IMAGE)
 
 
 def calculate_width(badge_text: str) -> float:
@@ -17,43 +39,19 @@ def calculate_width(badge_text: str) -> float:
     :param badge_text: The text to be displayed on the badge.
     :return: The width of the rectangle.
     """
-    verdana_path = "app/assets/fonts/Verdana.ttf"
-    noto_path = "app/assets/fonts/NotoSansCJK.otf"
-
     padding = 22  # Extra padding for aesthetic spacing
     icon_size = 35  # Extra space for the icon
-    spacing_width = 0  # Init empty var to account for font differences
 
-    try:
-        font = ImageFont.truetype(verdana_path, size=11)  # Match SVG font-size
-
-        # Account for letter spacing by adding extra space for each character (if needed)
-        letter_spacing = (
-            1  # You can adjust this value based on the desired letter spacing
-        )
-        spacing_width = len(badge_text) * letter_spacing
-
-    except IOError:
-        font = ImageFont.truetype(
-            noto_path, size=11
-        )  # Use NotoSansCJK if Verdana fails
-
-    # Create a dummy image and drawing context to calculate text size
-    dummy_image = Image.new("RGB", (1, 1))  # Small image for text sizing
-    draw = ImageDraw.Draw(dummy_image)
+    letter_spacing = 1
+    spacing_width = len(badge_text) * letter_spacing
 
     # Get the text width using the font and calculate the bounding box
-    text_width = draw.textbbox((0, 0), badge_text, font=font)[2]  # Width of the text
+    text_width = _DUMMY_DRAW.textbbox((0, 0), badge_text, font=_FONT)[2]
 
     # Calculate the total width, adding padding and icon space
     calculated_width = text_width + spacing_width + padding + icon_size
 
     return calculated_width
-
-
-def encode_image_to_base64(image_path: str):
-    with open(image_path, "rb") as image_file:
-        return base64.b64encode(image_file.read()).decode("utf-8")
 
 
 def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
@@ -64,7 +62,6 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
     :return: Returns the SVG badge in plain text.
     """
     rank = rank_data["rank"].lower()
-    div = rank_data["div"].upper()  # Not used as of now
     summoner_name = rank_data["summoner_name"]
     tag_line = rank_data["tag_line"]
 
@@ -74,28 +71,23 @@ def generate_badge(rank_data: dict, use_rank_name: bool) -> str:
         badge_text = f"{summoner_name}#{tag_line}"
 
     logger.info(f"`generate_badge` started for player {summoner_name}#{tag_line}")
-
-    # Determine badge color based on rank, defaulting to light grey for unranked
     color = constants.colors.get(rank, "#FFFFFF")
-
-    # Calculate proper width for badge
     proper_width = calculate_width(badge_text)
-
-    # Base64 encode the image (encode into the SVG for sake of GitHub embeds)
-    base64_rank_img = encode_image_to_base64(f"app/assets/{rank}.png")
+    base64_rank_img = _RANK_IMAGES.get(rank, "")
+    safe_text = html.escape(badge_text)
 
     # todo - polish this badge layout, maybe add modular styles
     svg_template = f"""
     <svg xmlns="http://www.w3.org/2000/svg" width="{proper_width}" height="28">
         <!-- Rectangle background -->
         <rect width="{proper_width}" height="28" fill="{color}" />
-        
+
         <!-- Icon -->
         <image href="data:image/png;base64,{base64_rank_img}" x="5" y="0" width="28" height="28" />
-        
+
         <!-- Text -->
         <text x="38" y="15.5" font-family="Verdana" font-size="11" font-weight="bold" fill="white" dominant-baseline="middle" letter-spacing="1">
-            {badge_text}
+            {safe_text}
         </text>
     </svg>
     """
