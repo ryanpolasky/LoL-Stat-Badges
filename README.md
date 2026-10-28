@@ -18,15 +18,12 @@ README files or anywhere else that supports SVG embeds!
 
 ### *Tech Stack*: 
 
-![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)&nbsp;
-![FastAPI](https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=FASTAPI&logoColor=white)&nbsp;
-![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff&style=for-the-badge)&nbsp;
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)&nbsp;
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare_Workers-F38020?style=for-the-badge&logo=cloudflareworkers&logoColor=white)&nbsp;
 ![Riot Games API](https://img.shields.io/badge/Riot_Games-D32936?style=for-the-badge&logo=riot-games&logoColor=white)&nbsp;
 
 ### *Tests*:
-![Linting](https://github.com/ryanpolasky/LoL-Stat-Badges/actions/workflows/pylint.yml/badge.svg)
-![Security](https://github.com/ryanpolasky/LoL-Stat-Badges/actions/workflows/security-scan.yml/badge.svg)
-![Deployment](https://github.com/ryanpolasky/LoL-Stat-Badges/actions/workflows/deployment-test.yml/badge.svg)
+![CI](https://github.com/ryanpolasky/LoL-Stat-Badges/actions/workflows/ci.yml/badge.svg)
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
@@ -35,10 +32,9 @@ README files or anywhere else that supports SVG embeds!
 To display your degeneracy, follow the steps below:
 
 - Embed the base URL - `https://api.ryanpolasky.com/lol/badge`
-- Add your region ([options listed here](https://github.com/ryanpolasky/LoL-Stat-Badges/blob/main/app/config.py)) to the path - `https://api.ryanpolasky.com/lol/badge/NA1`
+- Add your region ([options listed here](https://github.com/ryanpolasky/LoL-Stat-Badges/blob/main/src/regions.ts)) to the path - `https://api.ryanpolasky.com/lol/badge/NA1`
 - Add your Riot ID name to the path - `https://api.ryanpolasky.com/lol/badge/NA1/Eggy`
   - If your Riot ID name has spaces, replace them with `%20` in the URL
-  - Note: This API currently does not work with 
 - Add your Riot ID tag to the path - `https://api.ryanpolasky.com/lol/badge/NA1/Eggy/NEW`
 - Embed your shame into your GitHub README - `![LoL Stat Badge](https://api.ryanpolasky.com/lol/badge/NA1/Eggy/NEW)&nbsp;`
   - The `&nbsp;` tag is simply for formatting, so feel free to omit it if desired :)
@@ -48,20 +44,29 @@ embed URL.
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 
+### *Self-Hosting*:
+
+It's a single Cloudflare Worker. Update the route in `wrangler.jsonc` to your own domain, then:
+
+```sh
+npm install
+npx wrangler secret put RIOT_API_KEY
+npx wrangler deploy
+```
+
+`npm test` runs the test suite. `scripts/gen-assets.py` regenerates `src/generated.ts` (rank icons + font widths) if you change anything in `assets/`.
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
+
 ### *Next Steps*:
-- Figure out a way to measure the length of a username for dynamic badge sizing
-  - Current method is decent, but certain names can lead to shorter/longer than necessary badges
 - Add additional styles to match the Shields.io styles [listed here](https://shields.io/docs/static-badges)
-- Add caching
-  - Might not be necessary as the main use case is GitHub, which already caches for at least a day
-- Finalize Python tests
 - Add support for specifying which ranked queue to use
   - Currently only functions with Solo/Duo queue
 - ~~Check if Teamfight Tactics (TFT) support can be added & implement it if it can be~~
   - Looks like TFT can be added! 
 - Add champion mastery as a style option
 - ~~Add support for non-Latin/CJK characters~~
-- Maybe create standardized Riot API Python wrapper package if one doesn't already exist
+- Maybe create standardized Riot API wrapper package if one doesn't already exist
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="Thin Decorative Bar">
 

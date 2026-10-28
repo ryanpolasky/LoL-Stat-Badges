@@ -1,0 +1,17 @@
+{
+  "name": "lol-stat-badges",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261025.1",
+    "typescript": "5.9",
+    "vitest": "^3.2.7",
+    "wrangler": "^4.152.0"
+  }
+}
